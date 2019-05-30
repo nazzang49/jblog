@@ -15,36 +15,30 @@ import com.cafe24.jblog.vo.UserVO;
 public class AuthUserHandlerArgumentResolver implements HandlerMethodArgumentResolver {
    
    @Override
-   public Object resolveArgument(
-         MethodParameter parameter,
-         ModelAndViewContainer mavContainer,
-         NativeWebRequest webRequest,
-         WebDataBinderFactory binderFactory) throws Exception {
+   public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
       
-      if(supportsParameter(parameter)==false) {
+      if(supportsParameter(parameter) == false) {
          return WebArgumentResolver.UNRESOLVED;
       }
       
       HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
       HttpSession session = request.getSession();
+      
       if(session == null) {
          return null;
       }
       
       return session.getAttribute("authUser");
-
    }
-   
+
    @Override
    public boolean supportsParameter(MethodParameter parameter) {
       AuthUser authUser = parameter.getParameterAnnotation(AuthUser.class);
-      
-      // @AuthUser가 없다면
-      if(authUser==null) {
-         return false; 
+      if(authUser == null) {
+         return false;
       }
-      // @AuthUser가 있는데 UserVO가 다른 타입인 경우
-      if(parameter.getParameterType().equals(UserVO.class)==false) {
+      if(!parameter.getParameterType().equals(UserVO.class)) {
          return false;
       }
       return true;

@@ -16,11 +16,12 @@
 	</update>
 
 	<!-- getCategoryList -->
-	<select id="getCategoryList" resultType="categoryvo">
+	<select id="getCategoryList" parameterType="string" resultType="categoryvo">
 	<![CDATA[
 	select c.no, c.subject, count(p.category_no) as postCount, c.description
-	from category c, post p
-	where c.no=p.category_no
+	from category c left outer join post p
+	on c.no=p.category_no
+	where c.user_id=#{userId}
 	group by c.no, c.subject, c.description
   	]]>
 	</select>
@@ -29,6 +30,13 @@
 	<insert id="insertCategory" parameterType="categoryvo">
 	<![CDATA[
 	insert into category values(null,#{subject},#{description},now(),#{userId})
+	]]>
+	</insert>
+	
+	<!-- insertPost -->
+	<insert id="insertPost" parameterType="postvo">
+	<![CDATA[
+	insert into post values(null,#{title},#{contents},now(),#{categoryNo})
 	]]>
 	</insert>
 	
@@ -45,9 +53,38 @@
 	</delete>
 	
 	<!-- getPostList -->
-	<select id="getPostList" resultType="postvo">
+	<select id="getPostList" parameterType="map" resultType="postvo">
 	<![CDATA[
-	select no,title,reg_date as regDate from post where category_no=#{categoryNo}
+	select no,title,reg_date as regDate,category_no as categoryNo from post where category_no=#{categoryNo}
+	order by no desc limit #{startRow},#{pageSize}
+ 	]]>
+	</select>
+	
+	<!-- getPostNo -->
+	<select id="getOnePost" parameterType="long" resultType="long">
+	<![CDATA[
+	select no from post where category_no=#{categoryNo} order by no limit 0,1
+ 	]]>
+	</select>
+	
+	<!-- getCategoryNo -->
+	<select id="getOneCategory" parameterType="string" resultType="long">
+	<![CDATA[
+	select no from category where user_id=#{userId} order by no limit 0,1
+ 	]]>
+	</select>
+	
+	<!-- getOne -->
+	<select id="getOne" parameterType="map" resultType="postvo">
+	<![CDATA[
+	select no, title, contents from post where category_no=#{categoryNo} and no=#{postNo}
+ 	]]>
+	</select>
+	
+	<!-- getCount -->
+	<select id="getCount" parameterType="long" resultType="int">
+	<![CDATA[
+	select count(*) from post where category_no=#{categoryNo}
  	]]>
 	</select>
 	

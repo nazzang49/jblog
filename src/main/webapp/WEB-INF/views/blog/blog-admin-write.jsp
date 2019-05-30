@@ -10,6 +10,8 @@
 <Link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jblog.css">
 </head>
 <body>
+
+
 	<div id="container">
 		<!-- 헤더 자리 -->
 		<div id="wrapper">
@@ -17,25 +19,28 @@
 				<c:import url="/WEB-INF/views/includes/admin-menu.jsp">
 					<c:param name="menu" value="write"/>
 				</c:import>
-				<form action="" method="post">
+				<form action="${pageContext.request.contextPath}/${authUser.id}/admin/write" method="post">
 			      	<table class="admin-cat-write">
 			      		<tr>
 			      			<td class="t">제목</td>
 			      			<td>
 			      				<input type="text" size="60" name="title">
 				      			<select name="category">
-				      				<option>미분류</option>
-				      				<option>자바</option>
+				      				<!-- 등록된 카테고리 표시 -->
+				      				<c:forEach items="${categoryList }" var="cvo">
+				      				<option value="${cvo.no }">${cvo.subject }</option>
+				      				</c:forEach>
 				      			</select>
+				      			<input type="hidden" id="category-no" value="">
 				      		</td>
 			      		</tr>
 			      		<tr>
 			      			<td class="t">내용</td>
-			      			<td><textarea name="content"></textarea></td>
+			      			<td><textarea name="contents"></textarea></td>
 			      		</tr>
 			      		<tr>
 			      			<td>&nbsp;</td>
-			      			<td class="s"><input type="submit" value="포스트하기"></td>
+			      			<td class="s"><input type="submit" value="포스팅"></td>
 			      		</tr>
 			      	</table>
 				</form>

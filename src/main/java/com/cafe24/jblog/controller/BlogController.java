@@ -1,13 +1,16 @@
 package com.cafe24.jblog.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,9 +19,12 @@ import com.cafe24.jblog.service.UserService;
 import com.cafe24.jblog.vo.BlogVO;
 import com.cafe24.jblog.vo.CategoryVO;
 import com.cafe24.jblog.vo.PostVO;
+import com.cafe24.jblog.vo.UserVO;
+import com.cafe24.security.Auth;
+import com.cafe24.security.AuthUser;
 
 @Controller
-@RequestMapping("/blog")
+@RequestMapping("/{userId:(?!assets).*}")
 public class BlogController {
 
 	@Autowired
@@ -28,10 +34,12 @@ public class BlogController {
 	private UserService userService;
 	
 	//블로그-메인페이지 이동(회원 아이디 필요 -> 각자의 블로그 정보 표시)
-	@RequestMapping({"/{userId}","/{userId}/{pathNo1}","/{userId}/{pathNo1}/{pathNo2}"})
+	@RequestMapping({"","/","/{pathNo1}","/{pathNo1}/{pathNo2}"})
 	public String blog(@PathVariable Optional<String> userId,
 					   @PathVariable Optional<Long> pathNo1,
 					   @PathVariable Optional<Long> pathNo2,
+					   //Wrapper 클래스 타입으로 명시
+					   @RequestParam (value="pageNum", required=true, defaultValue="1") Integer pageNum,
 					   Model model) {
 		
 		//회원 아이디
@@ -51,19 +59,22 @@ public class BlogController {
 			//해당 카테고리 내 max번 게시물 표시
 			else if(pathNo1.isPresent()) {
 				categoryNo = pathNo1.get();
-				postNo = 1L; //max로 변경
+				postNo = blogService.getOnePost(categoryNo);
 			}
 			//max번 카테고리 내 max번 게시물
 			else {
-				categoryNo = 1L; //max로 변경
-				postNo = 1L; //max로 변경
+				categoryNo = blogService.getOneCategory(id);
+				postNo = blogService.getOnePost(categoryNo);
 			}
 		}
 		
 		List<CategoryVO> categoryList = blogService.getCategoryList(id);
-		List<PostVO> postList = blogService.getPostList(categoryNo);
+		Map<String, Object> map = blogService.getPostList(categoryNo, pageNum);
 		
-		//[게시물 하나 가져오기] getOnePost();
+		//메인에 표시할 대표 게시물 선정
+		PostVO post = blogService.getOne(categoryNo, postNo);
+		
+		System.out.println(post);
 		
 		//리스트 외 블로그 정보 추출
 		BlogVO bvo = blogService.getInfo(id);
@@ -74,23 +85,33 @@ public class BlogController {
 		model.addAttribute("userId", id);
 		model.addAttribute("bvo", bvo);
 		model.addAttribute("categoryList", categoryList);
-		model.addAttribute("postList", postList);
-		
-		//path로 입력된 회원 관련 블로그 정보 추출
-		
+		//게시물 페이징 처리
+		model.addAttribute("map", map);
+		model.addAttribute("post", post);
+		model.addAttribute("categoryNo", categoryNo);
+		model.addAttribute("pageNum", pageNum);
 		
 		return "blog/blog-main";
 	}
 	
 	//블로그-관리 페이지 이동
-	@RequestMapping("/{userId}/admin/basic")
+	@Auth
+	@RequestMapping("/admin/basic")
 	public String basic(@PathVariable Optional<String> userId,
-						   Model model) {
+						@AuthUser UserVO authUser,
+						Model model) {
 		
 		String id = "";
 		
 		if(userId.isPresent()) {
 			id=userId.get();
+		}
+		
+		
+		//다른 사용자가 접근 시
+		if(!authUser.getId().equals(id)) {
+			//본인 메인으로 이동
+			return "redirect:/";
 		}
 		
 		BlogVO bvo = blogService.getInfo(id);
@@ -102,15 +123,23 @@ public class BlogController {
 	}
 	
 	//블로그-관리 정보 변경
-	@RequestMapping("/{userId}/admin/update")
+	@Auth
+	@RequestMapping("/admin/update")
 	public String update(@PathVariable Optional<String> userId,
 						 @RequestParam (value="title", required=true, defaultValue="") String title,
-						 @RequestParam (value="logo") MultipartFile logo) {
+						 @RequestParam (value="logo") MultipartFile logo,
+						 @AuthUser UserVO authUser) {
 		
 		String id = "";
 		
 		if(userId.isPresent()) {
 			id=userId.get();
+		}
+		
+		//다른 사용자가 접근 시
+		if(!authUser.getId().equals(id)) {
+			//본인 메인으로 이동
+			return "redirect:/";
 		}
 		
 		String url = userService.restore(logo);
@@ -122,13 +151,15 @@ public class BlogController {
 		
 		boolean flag = blogService.update(bvo);
 		
-		return "redirect:/blog/"+id;
+		return "redirect:/"+id;
 	}
 	
 	//블로그-카테고리 페이지 이동
-	@RequestMapping("/{userId}/admin/category")
+	@Auth
+	@RequestMapping("/admin/category")
 	public String category(@PathVariable Optional<String> userId,
-						   Model model) {
+						   Model model,
+						   @AuthUser UserVO authUser) {
 		
 		String id = "";
 		
@@ -136,12 +167,72 @@ public class BlogController {
 			id=userId.get();
 		}
 		
+		//다른 사용자가 접근 시
+		if(!authUser.getId().equals(id)) {
+			//본인 메인으로 이동
+			return "redirect:/";
+		}
+
+		BlogVO bvo = blogService.getInfo(id);
 		List<CategoryVO> categoryList = blogService.getCategoryList(id);
 
+		model.addAttribute("bvo", bvo);
 		model.addAttribute("userId", id);
 		model.addAttribute("categoryList", categoryList);
 		
 		return "blog/blog-admin-category";
+	}
+	
+	//블로그-글쓰기 페이지 이동
+	@Auth
+	@RequestMapping("/admin/write")
+	public String write(@PathVariable Optional<String> userId,
+						Model model,
+						@AuthUser UserVO authUser) {
+		
+		String id = "";
+		
+		if(userId.isPresent()) {
+			id=userId.get();
+		}
+		
+		//다른 사용자가 접근 시
+		if(!authUser.getId().equals(id)) {
+			//본인 메인으로 이동
+			return "redirect:/";
+		}
+
+		List<CategoryVO> categoryList = blogService.getCategoryList(id);
+		model.addAttribute("categoryList", categoryList);
+
+		return "blog/blog-admin-write";
+	}
+	
+	//블로그-글쓰기 페이지 작성
+	@Auth
+	@RequestMapping(value="/admin/write", method=RequestMethod.POST)
+	public String write(@PathVariable Optional<String> userId,
+						@ModelAttribute PostVO pvo,
+						@RequestParam (value="category", required=true, defaultValue="0") Long categoryNo,
+						Model model,
+						@AuthUser UserVO authUser) {
+		
+		String id = "";
+		
+		if(userId.isPresent()) {
+			id=userId.get();
+		}
+		
+		//다른 사용자가 접근 시
+		if(!authUser.getId().equals(id)) {
+			//본인 메인으로 이동
+			return "redirect:/";
+		}
+		
+		pvo.setCategoryNo(categoryNo);
+		blogService.insertPost(pvo);
+		
+		return "redirect:/"+id;
 	}
 	
 }

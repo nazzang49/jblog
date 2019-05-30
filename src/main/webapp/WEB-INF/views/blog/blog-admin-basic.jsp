@@ -17,7 +17,7 @@
 				<c:import url="/WEB-INF/views/includes/admin-menu.jsp">
 					<c:param name="menu" value="basic"/>
 				</c:import>
-				<form action="${pageContext.request.contextPath}/blog/${authUser.id}/admin/update" method="post" enctype="multipart/form-data">
+				<form action="${pageContext.request.contextPath}/${authUser.id}/admin/update" method="post" enctype="multipart/form-data">
 					<!-- 기존 정보 추출 -->
 	 		      	<table class="admin-config">
 			      		<tr>
@@ -30,7 +30,7 @@
 			      		</tr>      		
 			      		<tr>
 			      			<td class="t">&nbsp;</td>
-			      			<td><input type="file" name="logo"></td>      			
+			      			<td><input type="file" name="logo"></td>
 			      		</tr>           		
 			      		<tr>
 			      			<td class="t">&nbsp;</td>

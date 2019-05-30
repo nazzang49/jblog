@@ -19,7 +19,7 @@ import com.cafe24.jblog.vo.UserVO;
 public class UserService {
 
 	private static final String SAVE_PATH = "/jblog-uploads";
-	private static final String URL = "/images";
+	private static final String URL = "/image";
 	
 	@Autowired
 	private UserDAO userDao;
@@ -74,7 +74,7 @@ public class UserService {
 			os.write(fileData);
 			os.close();
 			
-			url = URL + "/" + saveFileName;
+			url = URL + SAVE_PATH + "/" + saveFileName;
 			
 		} catch (IOException e) {
 			throw new RuntimeException("Fileupload error:" + e);

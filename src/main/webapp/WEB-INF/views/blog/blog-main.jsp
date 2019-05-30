@@ -15,16 +15,48 @@
 		<div id="wrapper">
 			<div id="content">
 				<div class="blog-content">
-					<h4>title</h4>
+				<c:if test="${post!=null }">
+					<h4>${post.title }</h4>
 					<p>
-						contents
+						${post.contents }
 					<p>
+				</c:if>
+				<c:if test="${post==null }">
+					<h4>현재 작성된 게시물 없음</h4>
+				</c:if>
 				</div>
-				<ul class="blog-list">
-				<c:forEach items="${postList }" var="pvo">
-					<li><a href="">${pvo.title }</a> <span>${pvo.regDate }</span></li>
+				<table id="admin-cat-add">
+					<tr>
+					<th>제목</th>
+					<th>작성일</th>
+					</tr>
+				<c:forEach items="${map.postList }" var="pvo">
+					<tr>
+					<td><a href="${pageContext.request.contextPath}/${userId}/${pvo.categoryNo }/${pvo.no}?pageNum=${pageNum}">${pvo.title }</a></td>
+					<td>${pvo.regDate }</td>
+					</tr>
 				</c:forEach>
-				</ul>
+				</table>
+				<!-- pager 추가 -->
+				<div class="pager">
+					<ul>
+						<li>
+						<!-- 현재 페이지 기준, 시작 페이지 > 페이지 블럭 -->
+						<c:if test='${map.startPage>map.pageBlock }'>
+						<a href="${pageContext.servletContext.contextPath }/${userId }/${categoryNo }/${post.no }?pageNum=${map.startPage-map.pageBlock}"> ◀ </a>
+						</c:if>
+						</li>
+						<!-- begin = startPage / end = endPage -->
+						<c:forEach var="i" begin="${map.startPage }" end="${map.endPage }">
+						<li class="selected"><a href="${pageContext.servletContext.contextPath }/${userId }/${categoryNo }/${post.no }?pageNum=${i}">${i}</a></li>
+						</c:forEach>
+						<li>
+						<c:if test='${map.endPage<map.pageCount }'>
+						<a href="${pageContext.servletContext.contextPath }/${userId }/${categoryNo }/${post.no }?pageNum=${map.startPage+map.pageBlock}"> ▶ </a>
+						</c:if>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 

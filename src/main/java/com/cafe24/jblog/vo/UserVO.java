@@ -5,14 +5,22 @@ import java.sql.Date;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.validation.annotation.Validated;
 
 public class UserVO {
-
+	
 	private String id;
 	private String name;
 	private String pw;
 	private Date regDate;
+	private String logo;
 	
+	public String getLogo() {
+		return logo;
+	}
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
 	public String getId() {
 		return id;
 	}
@@ -40,7 +48,7 @@ public class UserVO {
 
 	@Override
 	public String toString() {
-		return "UserVO [id=" + id + ", name=" + name + ", pw=" + pw + ", regDate=" + regDate + "]";
+		return "UserVO [id=" + id + ", name=" + name + ", pw=" + pw + ", regDate=" + regDate + ", logo=" + logo + "]";
 	}
 	
 }

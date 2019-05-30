@@ -5,19 +5,28 @@
 <ul class="admin-menu">
 	<c:choose>
 	<c:when test='${param.menu == "basic" }'>
-		<li class="selected"><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/basic">기본설정</a></li>
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/category">카테고리</a></li>
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/write">글작성</a></li>
+		<li class="selected"><a href="${pageContext.request.contextPath}/${authUser.id}/admin/basic">기본설정</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/category">카테고리</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/write">글작성</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}">메인</a></li>
 	</c:when>
 	<c:when test='${param.menu == "category" }'>
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/basic">기본설정</a></li>
-		<li class="selected"><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/category">카테고리</a></li>
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/write">글작성</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/basic">기본설정</a></li>
+		<li class="selected"><a href="${pageContext.request.contextPath}/${authUser.id}/admin/category">카테고리</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/write">글작성</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}">메인</a></li>
 	</c:when>
 	<c:when test='${param.menu == "write" }'>
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/basic">기본설정</a></li>
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/category">카테고리</a></li>
-		<li class="selected"><a href="${pageContext.request.contextPath}/blog/${authUser.id}/admin/write">글작성</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/basic">기본설정</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/category">카테고리</a></li>
+		<li class="selected"><a href="${pageContext.request.contextPath}/${authUser.id}/admin/write">글작성</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}">메인</a></li>
+	</c:when>
+	<c:when test='${param.menu == "main" }'>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/basic">기본설정</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/category">카테고리</a></li>
+		<li><a href="${pageContext.request.contextPath}/${authUser.id}/admin/write">글작성</a></li>
+		<li class="selected"><a href="${pageContext.request.contextPath}/${authUser.id}">메인</a></li>
 	</c:when>
 	<c:otherwise></c:otherwise>
 	</c:choose>

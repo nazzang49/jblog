@@ -11,7 +11,7 @@
 	<c:otherwise>
 	<li><a href="${pageContext.request.contextPath}/user/logout">Logout</a></li>
 	<!-- 로그인 정보에 근거, 본인 블로그로 이동 -->
-	<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}">MyBlog</a></li>
+	<li><a href="${pageContext.request.contextPath}/${authUser.id}">MyBlog</a></li>
 	</c:otherwise>
 	</c:choose>
 </ul>

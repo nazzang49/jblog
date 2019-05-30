@@ -1,11 +1,8 @@
 package com.cafe24.jblog.controller;
 
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +31,8 @@ public class UserController {
 	public String join(@ModelAttribute UserVO uvo,
 					   @RequestParam (value="title", required=true, defaultValue="") String title,
 					   @RequestParam (value="logo") MultipartFile logo) {
+		
+
 		//1) 회원가입
 		boolean flag = userService.join(uvo);
 		if(!flag) return "redirect:/user/join";

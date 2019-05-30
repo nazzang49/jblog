@@ -8,7 +8,7 @@
 	<ul>
 		<!-- 카테고리 번호 URL 추가 필요 -->
 		<c:forEach items="${categoryList }" var="cvo">
-		<li><a href="${pageContext.request.contextPath}/blog/${authUser.id}/${cvo.no}">${cvo.subject }</a></li>
+		<li><a href="${pageContext.request.contextPath}/${userId}/${cvo.no}">${cvo.subject }</a></li>
 		</c:forEach>
 	</ul>
 </div>
