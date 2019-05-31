@@ -41,7 +41,7 @@ public class BlogService {
 		int startRow = (currentPage-1)*PAGE_SIZE+1;
 		
 		//카테고리 내 총 게시물 수
-		int count = categoryDao.getCount(categoryNo);
+		int count = categoryDao.getCount(categoryNo, id);
 		int pageCount = count/PAGE_SIZE+(count%PAGE_SIZE==0? 0:1);
 		int startPage = ((currentPage-1)/pageBlock)*pageBlock+1;
 		int endPage = startPage+pageBlock-1;
@@ -54,6 +54,8 @@ public class BlogService {
 		}
 
 		List<PostVO> postList = postDao.getPostList(categoryNo, startRow-1, PAGE_SIZE, id);
+		
+		System.out.println("count : "+count);
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("postList", postList);

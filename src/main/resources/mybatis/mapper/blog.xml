@@ -106,9 +106,14 @@
 	</select>
 	
 	<!-- getCount -->
-	<select id="getCount" parameterType="long" resultType="int">
+	<select id="getCount" parameterType="map" resultType="int">
 	<![CDATA[
-	select count(*) from post where category_no=#{categoryNo}
+	select count(*)
+	from post p, category c, user u
+	where u.id=c.user_id
+	and u.id=#{userId}
+	and c.no=p.category_no
+	and p.category_no=#{categoryNo}
  	]]>
 	</select>
 	

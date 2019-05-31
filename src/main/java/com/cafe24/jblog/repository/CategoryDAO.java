@@ -1,6 +1,8 @@
 package com.cafe24.jblog.repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,11 @@ public class CategoryDAO {
 	}
 	
 	//특정 카테고리 내 전체 게시물 수
-	public int getCount(Long categoryNo) {
-		return sqlSession.selectOne("blog.getCount", categoryNo);
+	public int getCount(Long categoryNo, String id) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("categoryNo", categoryNo);
+		map.put("userId", id);
+		return sqlSession.selectOne("blog.getCount", map);
 	}
 	
 	//블로그 정보 추출(대표 카테고리)

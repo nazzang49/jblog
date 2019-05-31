@@ -96,9 +96,9 @@
 			<img id="img-checkemail" style="display: none;" src="${pageContext.request.contextPath}/assets/images/check.png"><br>
 
 			<label class="block-label" for="pw">패스워드</label>
-			<form:input path="pw"/><br><br>
+			<form:input path="pw" type="password"/><br><br>
 			<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
-				<form:errors path="pw" type="password"/>
+				<form:errors path="pw"/>
 			</p>
 			
 			<!-- 가입하는 순간 개인 블로그 자동 생성 -->
