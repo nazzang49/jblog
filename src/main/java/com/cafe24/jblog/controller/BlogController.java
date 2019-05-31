@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -197,6 +200,7 @@ public class BlogController {
 	@RequestMapping("/admin/write")
 	public String write(@PathVariable Optional<String> userId,
 						Model model,
+						@ModelAttribute("pvo") PostVO pvo,
 						@AuthUser UserVO authUser) {
 		
 		String id = "";
@@ -221,10 +225,17 @@ public class BlogController {
 	@Auth
 	@RequestMapping(value="/admin/write", method=RequestMethod.POST)
 	public String write(@PathVariable Optional<String> userId,
-						@ModelAttribute PostVO pvo,
+						@ModelAttribute("pvo") @Valid PostVO pvo,
+						BindingResult result,
 						@RequestParam (value="category", required=true, defaultValue="0") Long categoryNo,
 						Model model,
 						@AuthUser UserVO authUser) {
+		System.out.println("write");
+		//유효성 검사를 통과하지 못한 경우
+		if(result.hasErrors()) {
+			model.addAllAttributes(result.getModel());
+			return "blog/blog-admin-write";
+		}
 		
 		String id = "";
 		

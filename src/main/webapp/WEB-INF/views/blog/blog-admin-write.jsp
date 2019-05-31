@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <!doctype html>
 <html>
@@ -19,31 +20,40 @@
 				<c:import url="/WEB-INF/views/includes/admin-menu.jsp">
 					<c:param name="menu" value="write"/>
 				</c:import>
-				<form action="${pageContext.request.contextPath}/${authUser.id}/admin/write" method="post">
+				<form:form modelAttribute="pvo"
+						action="${pageContext.request.contextPath}/${authUser.id}/admin/write"
+						method="post">
 			      	<table class="admin-cat-write">
 			      		<tr>
 			      			<td class="t">제목</td>
 			      			<td>
-			      				<input type="text" size="60" name="title">
+			      				<form:input path="title" size="70"/>
+								<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
+									<form:errors path="title"/>
+								</p>
 				      			<select name="category">
 				      				<!-- 등록된 카테고리 표시 -->
 				      				<c:forEach items="${categoryList }" var="cvo">
 				      				<option value="${cvo.no }">${cvo.subject }</option>
 				      				</c:forEach>
 				      			</select>
-				      			<input type="hidden" id="category-no" value="">
 				      		</td>
 			      		</tr>
 			      		<tr>
 			      			<td class="t">내용</td>
-			      			<td><textarea name="contents"></textarea></td>
+			      			<td>
+			      			<form:textarea path="contents"/>
+							<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
+								<form:errors path="contents"/>
+							</p>
+			      			</td>
 			      		</tr>
 			      		<tr>
 			      			<td>&nbsp;</td>
 			      			<td class="s"><input type="submit" value="포스팅"></td>
 			      		</tr>
 			      	</table>
-				</form>
+				</form:form>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/footer.jsp"></c:import>

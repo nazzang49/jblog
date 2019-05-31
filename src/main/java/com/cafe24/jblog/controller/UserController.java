@@ -40,7 +40,6 @@ public class UserController {
 		
 		//유효성 검사를 통과하지 못한 경우
 		if(result.hasErrors()) {
-			System.out.println("들어온다");
 			model.addAllAttributes(result.getModel());
 			return "user/join";
 		}
