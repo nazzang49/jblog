@@ -22,7 +22,7 @@
 					<p>
 				</c:if>
 				<c:if test="${post==null }">
-					<h4>현재 작성된 게시물 없음</h4>
+					<h4>카테고리 OR 게시물 없음</h4>
 				</c:if>
 				</div>
 				<table id="admin-cat-add">

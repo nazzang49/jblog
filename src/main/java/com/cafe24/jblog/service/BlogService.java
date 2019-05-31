@@ -29,7 +29,7 @@ public class BlogService {
 	private PostDAO postDao;
 	
 	//post 페이징 처리
-	public Map<String, Object> getPostList(Long categoryNo, int pageNum){
+	public Map<String, Object> getPostList(Long categoryNo, int pageNum, String id){
 		
 		///현재 페이지
 		int currentPage = pageNum;
@@ -54,7 +54,7 @@ public class BlogService {
 			endPage=pageCount;
 		}
 
-		List<PostVO> postList = postDao.getPostList(categoryNo, startRow-1, PAGE_SIZE);
+		List<PostVO> postList = postDao.getPostList(categoryNo, startRow-1, PAGE_SIZE, id);
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("postList", postList);
@@ -84,8 +84,8 @@ public class BlogService {
 	}
 	
 	//blog-main
-	public PostVO getOne(Long categoryNo, Long postNo) {
-		return postDao.getOne(categoryNo, postNo);
+	public PostVO getOne(Long categoryNo, Long postNo, String id) {
+		return postDao.getOne(categoryNo, postNo, id);
 	}
 	
 	//blog-main
@@ -93,7 +93,7 @@ public class BlogService {
 		return categoryDao.getOneCategory(id);
 	}
 	
-	//blog-main
+	//blog-admin-basic
 	public boolean update(BlogVO bvo) {
 		return blogDao.update(bvo);
 	}
@@ -103,7 +103,7 @@ public class BlogService {
 		return categoryDao.insertCategory(cvo);
 	}
 	
-	//blog-admin-category
+	//blog-admin-write
 	public boolean insertPost(PostVO pvo) {
 		return postDao.insertPost(pvo);
 	}
@@ -116,6 +116,11 @@ public class BlogService {
 	//blog-admin-category
 	public boolean deleteCategory(Long no) {
 		return categoryDao.deleteCategory(no);
+	}
+	
+	//blog-main-getSpecificPost
+	public PostVO getSpecificPost(String id) {
+		return postDao.getSpecificPost(id);
 	}
 	
 }

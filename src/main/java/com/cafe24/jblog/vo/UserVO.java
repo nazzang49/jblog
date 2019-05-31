@@ -10,8 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class UserVO {
 	
+	@NotEmpty
 	private String id;
+	@NotEmpty
 	private String name;
+	@NotEmpty
 	private String pw;
 	private Date regDate;
 	

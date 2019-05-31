@@ -55,7 +55,12 @@
 	<!-- getPostList -->
 	<select id="getPostList" parameterType="map" resultType="postvo">
 	<![CDATA[
-	select no,title,reg_date as regDate,category_no as categoryNo from post where category_no=#{categoryNo}
+	select p.no, p.title, p.reg_date as regDate, p.category_no as categoryNo
+	from post p, category c, user u
+	where u.id=c.user_id
+	and u.id=#{userId}
+	and c.no=p.category_no
+	and p.category_no=#{categoryNo}
 	order by no desc limit #{startRow},#{pageSize}
  	]]>
 	</select>
@@ -63,21 +68,40 @@
 	<!-- getPostNo -->
 	<select id="getOnePost" parameterType="long" resultType="long">
 	<![CDATA[
-	select no from post where category_no=#{categoryNo} order by no limit 0,1
+	select no from post where category_no=#{categoryNo} order by no desc limit 0,1
  	]]>
 	</select>
 	
 	<!-- getCategoryNo -->
 	<select id="getOneCategory" parameterType="string" resultType="long">
 	<![CDATA[
-	select no from category where user_id=#{userId} order by no limit 0,1
+	select no from category where user_id=#{userId} order by no desc limit 0,1
  	]]>
 	</select>
 	
 	<!-- getOne -->
 	<select id="getOne" parameterType="map" resultType="postvo">
 	<![CDATA[
-	select no, title, contents from post where category_no=#{categoryNo} and no=#{postNo}
+	select p.no, p.title, p.contents
+	from post p, category c, user u
+	where u.id=c.user_id
+	and u.id=#{userId}
+	and c.no=p.category_no
+	and p.category_no=#{categoryNo}
+	and p.no=#{postNo}
+ 	]]>
+	</select>
+	
+	<!-- getSpecificPost -->
+	<select id="getSpecificPost" parameterType="string" resultType="postvo">
+	<![CDATA[
+	select p.no, p.category_no as categoryNo, p.title, p.contents
+	from post p, category c, user u
+	where u.id=c.user_id
+	and u.id=#{userId}
+	and c.no=p.category_no
+	order by no desc
+	limit 0,1;
  	]]>
 	</select>
 	

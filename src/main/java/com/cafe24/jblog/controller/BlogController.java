@@ -47,6 +47,8 @@ public class BlogController {
 		Long categoryNo = 0L;
 		Long postNo = 0L;
 		
+		PostVO post = null;
+		
 		//blog-main에서 필요한 정보 = 블로그 타이틀, 카테고리 리스트, 카테고리 별 게시물 리스트, 기본 표시할 게시물 제목 및 내용 
 		
 		if(userId.isPresent()) {
@@ -55,24 +57,31 @@ public class BlogController {
 			if(pathNo2.isPresent()) {
 				categoryNo = pathNo1.get();
 				postNo = pathNo2.get();
+				
+				//메인에 표시할 게시물 (없으면 "없음 문구" 표시)
+				post = blogService.getOne(categoryNo, postNo, id);
+				
 			}
 			//해당 카테고리 내 max번 게시물 표시
 			else if(pathNo1.isPresent()) {
 				categoryNo = pathNo1.get();
 				postNo = blogService.getOnePost(categoryNo);
+				
+				//메인에 표시할 게시물 (없으면 "없음 문구" 표시)
+				post = blogService.getOne(categoryNo, postNo, id);
+				
 			}
-			//max번 카테고리 내 max번 게시물
+			//둘 다 없는 경우, 대표 게시물 선정 = 포스트 중 1개 선택 + 해당 포스트의 카테고리 번호 함께 반환
 			else {
-				categoryNo = blogService.getOneCategory(id);
-				postNo = blogService.getOnePost(categoryNo);
+				//단 하나의 게시물도 없으면 "없음 문구" 표시
+				post = blogService.getSpecificPost(id);
+				categoryNo = post.getCategoryNo();
+				System.out.println("categoryNo : "+categoryNo);
 			}
 		}
 		
 		List<CategoryVO> categoryList = blogService.getCategoryList(id);
-		Map<String, Object> map = blogService.getPostList(categoryNo, pageNum);
-		
-		//메인에 표시할 대표 게시물 선정
-		PostVO post = blogService.getOne(categoryNo, postNo);
+		Map<String, Object> map = blogService.getPostList(categoryNo, pageNum, id);
 		
 		System.out.println(post);
 		

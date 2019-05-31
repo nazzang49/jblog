@@ -36,7 +36,7 @@ public class AuthLoginInterceptor extends HandlerInterceptorAdapter{
 		
 		HttpSession session = request.getSession(true);
 		session.setAttribute("authUser", authUser);
-		response.sendRedirect(request.getContextPath()+"/"+id);
+		response.sendRedirect(request.getContextPath());
 		
 		return false;
 	}

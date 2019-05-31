@@ -27,11 +27,12 @@ public class PostDAO {
 	}
 	
 	//블로그 게시물 추출
-	public List<PostVO> getPostList(Long categoryNo, int startRow, int pageSize) {
+	public List<PostVO> getPostList(Long categoryNo, int startRow, int pageSize, String id) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("categoryNo", categoryNo);
 		map.put("startRow", startRow);
 		map.put("pageSize", pageSize);
+		map.put("userId", id);
 		return sqlSession.selectList("blog.getPostList", map);
 	}
 
@@ -41,10 +42,16 @@ public class PostDAO {
 	}
 	
 	//블로그 정보 추출(대표 카테고리)
-	public PostVO getOne(Long categoryNo, Long postNo) {
-		Map<String, Long> map = new HashMap<>();
+	public PostVO getOne(Long categoryNo, Long postNo, String id) {
+		Map<String, Object> map = new HashMap<>();
 		map.put("categoryNo", categoryNo);
 		map.put("postNo", postNo);
+		map.put("userId", id);
 		return sqlSession.selectOne("blog.getOne", map);
+	}
+	
+	//블로그 정보 추출(대표 게시물)
+	public PostVO getSpecificPost(String id) {
+		return sqlSession.selectOne("blog.getSpecificPost", id);
 	}
 }

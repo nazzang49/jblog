@@ -25,14 +25,14 @@ public class UserController {
 	private UserService userService;
 	
 	//회원가입 페이지 이동
-	@RequestMapping(value="/join", method=RequestMethod.GET)
-	public String join() {
+	@RequestMapping(value="/join")
+	public String join(@ModelAttribute("uvo") UserVO uvo) {
 		return "user/join";
 	}
 	
 	//회원가입 처리
 	@RequestMapping(value="/join", method=RequestMethod.POST)
-	public String join(@ModelAttribute @Valid UserVO uvo,
+	public String join(@ModelAttribute("uvo") @Valid UserVO uvo,
 					   BindingResult result,
 					   @RequestParam (value="title", required=true, defaultValue="") String title,
 					   @RequestParam (value="logo") MultipartFile logo,

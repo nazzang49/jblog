@@ -56,23 +56,35 @@
 		<c:import url="/WEB-INF/views/includes/menu.jsp"></c:import>
 		
 		<!-- MultiPart 객체로 전송 -->
-		<form class="join-form" 
-			id="join-form" 
-			method="post" 
+		<form:form 
+			class="join-form"
+			modelAttribute="uvo"
+			id="join-form"
+			method="post"
 			action="${pageContext.request.contextPath}/user/join" 
 			enctype="multipart/form-data">
-			<label class="block-label">이름</label>
-			<input id="name" name="name" type="text">
 			
-			<label class="block-label">아이디</label>
-			<input id="blog-id" name="id" type="text">
+			<label class="block-label" for="name">이름</label>
+			<form:input path="name"/>
+			<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
+				<form:errors path="name"/>
+			</p>
+			
+			<label class="block-label" for="id">아이디</label>
+			<form:input path="id"/>
+			<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
+				<form:errors path="id"/>
+			</p>
 			
 			<!-- Ajax로 구현 --> 
-			<input id="btn-id" type="button" value="중복검사">
+			<input id="btn-id" type="button" value="중복">
 			<img id="img-checkemail" style="display: none;" src="${pageContext.request.contextPath}/assets/images/check.png">
 
-			<label class="block-label">패스워드</label>
-			<input id="password" name="pw" type="password">
+			<label class="block-label" for="pw">패스워드</label>
+			<form:input path="pw"/>
+			<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
+				<form:errors path="pw" type="password"/>
+			</p>
 			
 			<!-- 가입하는 순간 개인 블로그 자동 생성 -->
 			<label class="block-label">블로그 타이틀</label>
@@ -87,7 +99,7 @@
 				<label class="l-float">전체동의</label>
 			</fieldset>
 			<input type="submit" value="가입하기">
-		</form>
+		</form:form>
 	</div>
 </body>
 </html>
