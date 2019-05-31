@@ -49,13 +49,14 @@ public class BlogController {
 		String id = "";
 		Long categoryNo = 0L;
 		Long postNo = 0L;
-		
 		PostVO post = null;
-		
-		//blog-main에서 필요한 정보 = 블로그 타이틀, 카테고리 리스트, 카테고리 별 게시물 리스트, 기본 표시할 게시물 제목 및 내용 
-		
+		//blog-main에서 필요한 정보 = 블로그 타이틀, 카테고리 리스트, 카테고리 별 게시물 리스트, 기본 표시할 게시물 제목 및 내용
+		BlogVO bvo = null;
+		List<CategoryVO> categoryList = null;
+		 
 		if(userId.isPresent()) {
 			id = userId.get();
+			bvo = blogService.getInfo(id);
 			//해당 카테고리 내 해당 게시물 표시
 			if(pathNo2.isPresent()) {
 				categoryNo = pathNo1.get();
@@ -76,23 +77,23 @@ public class BlogController {
 			}
 			//둘 다 없는 경우, 대표 게시물 선정 = 포스트 중 1개 선택 + 해당 포스트의 카테고리 번호 함께 반환
 			else {
-				//단 하나의 게시물도 없으면 "없음 문구" 표시
+				//단 하나의 게시물도 없으면 "없음 문구" 표시 and 메인으로 이동
 				post = blogService.getSpecificPost(id);
+				if(post==null) {
+					categoryList = blogService.getCategoryList(id);
+					model.addAttribute("categoryList", categoryList);
+					model.addAttribute("userId", id);
+					model.addAttribute("bvo", bvo);
+					model.addAttribute("post", post);
+					return "blog/blog-main";
+				}
 				categoryNo = post.getCategoryNo();
-				System.out.println("categoryNo : "+categoryNo);
 			}
 		}
 		
-		List<CategoryVO> categoryList = blogService.getCategoryList(id);
+		categoryList = blogService.getCategoryList(id);	
 		Map<String, Object> map = blogService.getPostList(categoryNo, pageNum, id);
-		
-		System.out.println(post);
-		
-		//리스트 외 블로그 정보 추출
-		BlogVO bvo = blogService.getInfo(id);
-		
-		System.out.println(bvo);
-		
+	
 		//현재 접속한 블로그 회원 아이디
 		model.addAttribute("userId", id);
 		model.addAttribute("bvo", bvo);
@@ -216,6 +217,7 @@ public class BlogController {
 		}
 
 		List<CategoryVO> categoryList = blogService.getCategoryList(id);
+		model.addAttribute("listSize", categoryList.size());
 		model.addAttribute("categoryList", categoryList);
 
 		return "blog/blog-admin-write";
@@ -230,17 +232,19 @@ public class BlogController {
 						@RequestParam (value="category", required=true, defaultValue="0") Long categoryNo,
 						Model model,
 						@AuthUser UserVO authUser) {
-		System.out.println("write");
-		//유효성 검사를 통과하지 못한 경우
-		if(result.hasErrors()) {
-			model.addAllAttributes(result.getModel());
-			return "blog/blog-admin-write";
-		}
 		
 		String id = "";
 		
 		if(userId.isPresent()) {
 			id=userId.get();
+		}
+		
+		//유효성 검사를 통과하지 못한 경우
+		if(result.hasErrors()) {
+			List<CategoryVO> categoryList = blogService.getCategoryList(id);
+			model.addAttribute("categoryList", categoryList);
+			model.addAllAttributes(result.getModel());
+			return "blog/blog-admin-write";
 		}
 		
 		//다른 사용자가 접근 시

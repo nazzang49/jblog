@@ -40,9 +40,8 @@ public class BlogService {
 		//한 페이지의 시작행, 끝행
 		int startRow = (currentPage-1)*PAGE_SIZE+1;
 		
-		int count = 0;
 		//카테고리 내 총 게시물 수
-		count = categoryDao.getCount(categoryNo);
+		int count = categoryDao.getCount(categoryNo);
 		int pageCount = count/PAGE_SIZE+(count%PAGE_SIZE==0? 0:1);
 		int startPage = ((currentPage-1)/pageBlock)*pageBlock+1;
 		int endPage = startPage+pageBlock-1;

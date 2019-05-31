@@ -11,8 +11,6 @@
 <Link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jblog.css">
 </head>
 <body>
-
-
 	<div id="container">
 		<!-- 헤더 자리 -->
 		<div id="wrapper">
@@ -31,11 +29,21 @@
 								<p style="font-weight:bold; color:red; text-align:left; padding:0; margin:0;">
 									<form:errors path="title"/>
 								</p>
+								<input type="hidden" id="user" value="${authUser.id }">
 				      			<select name="category">
 				      				<!-- 등록된 카테고리 표시 -->
+				      				<c:if test="${listSize!=0 }">
 				      				<c:forEach items="${categoryList }" var="cvo">
 				      				<option value="${cvo.no }">${cvo.subject }</option>
 				      				</c:forEach>
+				      				</c:if>
+				      				<c:if test="${listSize==0 }">
+				      				<script type="text/javascript">
+				      					var user = document.getElementById('user').value;
+				      					alert("[카테고리] 최소 1개 필요");
+				      					location.href="${pageContext.request.contextPath}/"+user+"/admin/category";
+				      				</script>
+				      				</c:if>
 				      			</select>
 				      		</td>
 			      		</tr>

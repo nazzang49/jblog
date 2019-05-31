@@ -37,6 +37,7 @@
 					</tr>
 				</c:forEach>
 				</table>
+				<c:if test="${map.count!=null }">
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
@@ -57,6 +58,7 @@
 						</li>
 					</ul>
 				</div>
+				</c:if>
 			</div>
 		</div>
 
