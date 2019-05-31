@@ -1,8 +1,12 @@
 package com.cafe24.jblog.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,18 +25,26 @@ public class UserController {
 	private UserService userService;
 	
 	//회원가입 페이지 이동
-	@RequestMapping("/join")
+	@RequestMapping(value="/join", method=RequestMethod.GET)
 	public String join() {
 		return "user/join";
 	}
 	
 	//회원가입 처리
 	@RequestMapping(value="/join", method=RequestMethod.POST)
-	public String join(@ModelAttribute UserVO uvo,
+	public String join(@ModelAttribute @Valid UserVO uvo,
+					   BindingResult result,
 					   @RequestParam (value="title", required=true, defaultValue="") String title,
-					   @RequestParam (value="logo") MultipartFile logo) {
+					   @RequestParam (value="logo") MultipartFile logo,
+					   Model model) {
 		
-
+		//유효성 검사를 통과하지 못한 경우
+		if(result.hasErrors()) {
+			System.out.println("들어온다");
+			model.addAllAttributes(result.getModel());
+			return "user/join";
+		}
+		
 		//1) 회원가입
 		boolean flag = userService.join(uvo);
 		if(!flag) return "redirect:/user/join";

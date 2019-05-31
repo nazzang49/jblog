@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cafe24.jblog.repository.BlogDAO;
+import com.cafe24.jblog.repository.CategoryDAO;
+import com.cafe24.jblog.repository.PostDAO;
 import com.cafe24.jblog.vo.BlogVO;
 import com.cafe24.jblog.vo.CategoryVO;
 import com.cafe24.jblog.vo.PostVO;
@@ -20,6 +22,12 @@ public class BlogService {
 	@Autowired
 	private BlogDAO blogDao;
 	
+	@Autowired
+	private CategoryDAO categoryDao;
+	
+	@Autowired
+	private PostDAO postDao;
+	
 	//post 페이징 처리
 	public Map<String, Object> getPostList(Long categoryNo, int pageNum){
 		
@@ -27,20 +35,15 @@ public class BlogService {
 		int currentPage = pageNum;
 		
 		//한 페이지에 10개의 게시물 표시
-		int pageSize = 5;
 		int pageBlock = 3;
 		
 		//한 페이지의 시작행, 끝행
-		int startRow = (currentPage-1)*pageSize+1;
-		int endRow = currentPage*pageSize;
+		int startRow = (currentPage-1)*PAGE_SIZE+1;
 		
-				//게시물 리스트 반환할 배열
-		List<PostVO> list = null;
-
 		int count = 0;
 		//카테고리 내 총 게시물 수
-		count = blogDao.getCount(categoryNo);
-		int pageCount = count/pageSize+(count%pageSize==0? 0:1);
+		count = categoryDao.getCount(categoryNo);
+		int pageCount = count/PAGE_SIZE+(count%PAGE_SIZE==0? 0:1);
 		int startPage = ((currentPage-1)/pageBlock)*pageBlock+1;
 		int endPage = startPage+pageBlock-1;
 		
@@ -50,9 +53,8 @@ public class BlogService {
 		if(endPage>pageCount) {
 			endPage=pageCount;
 		}
-		
 
-		List<PostVO> postList = blogDao.getPostList(categoryNo, startRow-1, pageSize);
+		List<PostVO> postList = postDao.getPostList(categoryNo, startRow-1, PAGE_SIZE);
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("postList", postList);
@@ -68,7 +70,7 @@ public class BlogService {
 	
 	//blog-main
 	public List<CategoryVO> getCategoryList(String id) {
-		return blogDao.getCategoryList(id);
+		return categoryDao.getCategoryList(id);
 	}
 	
 	//blog-main
@@ -78,17 +80,17 @@ public class BlogService {
 	
 	//blog-main
 	public Long getOnePost(Long categoryNo) {
-		return blogDao.getOnePost(categoryNo);
+		return postDao.getOnePost(categoryNo);
 	}
 	
 	//blog-main
 	public PostVO getOne(Long categoryNo, Long postNo) {
-		return blogDao.getOne(categoryNo, postNo);
+		return postDao.getOne(categoryNo, postNo);
 	}
 	
 	//blog-main
 	public Long getOneCategory(String id) {
-		return blogDao.getOneCategory(id);
+		return categoryDao.getOneCategory(id);
 	}
 	
 	//blog-main
@@ -98,22 +100,22 @@ public class BlogService {
 	
 	//blog-admin-category
 	public boolean insertCategory(CategoryVO cvo) {
-		return blogDao.insertCategory(cvo);
+		return categoryDao.insertCategory(cvo);
 	}
 	
 	//blog-admin-category
 	public boolean insertPost(PostVO pvo) {
-		return blogDao.insertPost(pvo);
+		return postDao.insertPost(pvo);
 	}
 	
 	//blog-admin-category
 	public boolean deletePost(Long categoryNo) {
-		return blogDao.deletePost(categoryNo);
+		return postDao.deletePost(categoryNo);
 	}
 	
 	//blog-admin-category
 	public boolean deleteCategory(Long no) {
-		return blogDao.deleteCategory(no);
+		return categoryDao.deleteCategory(no);
 	}
 	
 }
